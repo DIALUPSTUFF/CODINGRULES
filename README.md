@@ -10,6 +10,9 @@ In general, there are a few coding principles that we should work towards applyi
 - **15-Minute Rule**: If there's something that you haven't been able to understand or figure out after (at most) 15 minutes, ask someone for help.
 - **All Caps Repo Names**: For the culture.
 
+With regards to coding style...
+- 4-Space Tabs: This can be setup with View>Indentation in Sublime, and with `softtabstop` in Vim.
+
 ###Language-Specific Coding Style Guides
 Add new coding style guides for each language/technology that we work heavily across. Please add code block examples in each guide. (coming soon)
 - HTML
