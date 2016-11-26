@@ -1,4 +1,4 @@
-# Dial Up Code Styling Rules
+# Supercoding @ Dial Up
 
 ###General Rules
 In general, there are a few coding principles that we should work towards applying across our coding projects:
@@ -22,7 +22,7 @@ Add new coding style guides for each language/technology that we work heavily ac
 
 ###Release Process Guides
 Guides for releasing new Dial Up projects onto various projects.
-- Guide to Updating the Dial Up Website (coming soon)
+- [Deploying the Dial Up Website](Deploying.md)
 
 
 
