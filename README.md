@@ -1,6 +1,6 @@
 # Supercoding @ Dial Up
 
-###General Rules
+### General Rules
 In general, there are a few coding principles that we should work towards applying across our coding projects:
 
 - **D.R.Y. Code**: Don't Repeat Yourself by writing modular and resuable code.
@@ -13,14 +13,14 @@ In general, there are a few coding principles that we should work towards applyi
 With regards to coding style...
 - **4-Space Tabs**: This can be setup with View>Indentation in Sublime, and with `softtabstop` in Vim.
 
-###Language-Specific Coding Style Guides
+### Language-Specific Coding Style Guides
 Add new coding style guides for each language/technology that we work heavily across. Please add code block examples in each guide. (coming soon)
 - HTML
 - Javascript
 - CSS
 
 
-###Release Process Guides
+### Release Process Guides
 Guides for releasing new Dial Up projects onto various projects.
 - [Deploying the Dial Up Website](Deploying.md)
 
