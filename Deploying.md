@@ -1,6 +1,6 @@
 # Deploying Guidelines
 
-###Staging Deployment Process
+### Staging Deployment Process
 Our staging site is hosted on Heroku, and can be reach at https://dialupstuff.herokuapp.com/.
 
 **Preparation**:
@@ -18,7 +18,7 @@ Our Heroku server can be treated like a remote repository. Similar to Github, we
 5. Use `heroku open` to open the webpage for the site and see it live on staging.
 
 
-###Production Deployment Process
+### Production Deployment Process
 Our production site is hosted on Digital Ocean, and can be reach at http://dialupstuff.com/.
 
 **How It Works**:
@@ -32,6 +32,17 @@ Our Digital Ocean server can be thought of as a separate computer. Similar our o
 4. Switch to the prod branch with `git checkout prod`, and pull new changes with `git pull`. 
 5. Run `npm install` to download any missing dependencies.
 6. Run `forever restart server.js` to start the node server for this project. You may need to change the Express server to use port 80 if the code doesn't pick up on the correct port using the environment variable. We will looking into correcting this.
-7. Ensure that the server is running by checking `forever list` and open Forever logs with `forever logs server.js` to check ouput.
+7. Ensure that the server is running by checking `forever list` and open Forever logs with `forever logs server.js` to check output.
 8. If all seems good, updates to the site should now be officially deployed.
+
+
+### Docker Deployment Process (Experimental)
+Our production site is hosted on Digital Ocean, and can be reach at http://dialupstuff.com/.
+
+**Steps**:
+
+1. Download the [Docker Toolbox](https://www.docker.com/products/docker-toolbox), and verify that it's successfully installed [using this guide](https://docs.docker.com/engine/getstarted/step_one/). 
+2. Run `eval "$(docker-machine env default)"` to configure your local CLI to utilize `docker-machine` commands. More details on why this is necessary can be found [here](http://stackoverflow.com/questions/40038572/eval-docker-machine-env-default). 
+3. `cd` into the root directory of your project and run `docker build -t <image_name> .` to create an [image](https://docs.docker.com/engine/getstarted/step_two/) of the project on your system. Check that the image was successfully by running `docker images`.
+4. Do a test run of the image using `docker run <image_name>`.
 
