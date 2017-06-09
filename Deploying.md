@@ -41,8 +41,10 @@ Our production site is hosted on Digital Ocean, and can be reach at http://dialu
 
 **Steps**:
 
-1. Download the [Docker Toolbox](https://www.docker.com/products/docker-toolbox), and verify that it's successfully installed [using this guide](https://docs.docker.com/engine/getstarted/step_one/). 
+1. Download the [Docker Toolbox](https://www.docker.com/products/docker-toolbox), and verify that it's successfully installed [using this guide](https://docs.docker. com/engine/getstarted/step_one/). Once the toolbox has started, ensure you've open the Docker application (Docker daemon) that should now be present on your computer.
 2. Run `eval "$(docker-machine env default)"` to configure your local CLI to utilize `docker-machine` commands. More details on why this is necessary can be found [here](http://stackoverflow.com/questions/40038572/eval-docker-machine-env-default). 
 3. `cd` into the root directory of your project and run `docker build -t <image_name> .` to create an [image](https://docs.docker.com/engine/getstarted/step_two/) of the project on your system. Check that the image was successfully by running `docker images`.
-4. Do a test run of the image using `docker run <image_name>`.
+4. Do a test run of the image using `docker run -i -p 3000:3000 dialupsite`. This tells a Docker container that is running the image of the project we just created. Since this container is actually a virtual machine, we need to expose port 3000 to our system so that we can pull up the project with localhost.
+5. In a separate terminal tab, find the name of the container using `docker container ls`. Take the name of the running container, and then run `docker stop <name>` to stop the container.
+
 
