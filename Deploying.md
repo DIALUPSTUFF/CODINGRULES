@@ -44,7 +44,10 @@ Our production site is hosted on Digital Ocean, and can be reach at http://dialu
 1. Download the [Docker Toolbox](https://www.docker.com/products/docker-toolbox), and verify that it's successfully installed [using this guide](https://docs.docker. com/engine/getstarted/step_one/). Once the toolbox has started, ensure you've open the Docker application (Docker daemon) that should now be present on your computer.
 2. Run `eval "$(docker-machine env default)"` to configure your local CLI to utilize `docker-machine` commands. More details on why this is necessary can be found [here](http://stackoverflow.com/questions/40038572/eval-docker-machine-env-default). 
 3. `cd` into the root directory of your project and run `docker build -t <image_name> .` to create an [image](https://docs.docker.com/engine/getstarted/step_two/) of the project on your system. Check that the image was successfully by running `docker images`.
-4. Do a test run of the image using `docker run -i -p 3000:3000 dialupsite`. This tells a Docker container that is running the image of the project we just created. Since this container is actually a virtual machine, we need to expose port 3000 to our system so that we can pull up the project with localhost.
-5. In a separate terminal tab, find the name of the container using `docker container ls`. Take the name of the running container, and then run `docker stop <name>` to stop the container.
+4. Do a test run of the image using `docker run --name <name> -p 8080:3000 -d <image_name>`. This starts a Docker container that is running the image of the project we just created. Since this container is actually a virtual machine, we need to forward the exposed container port (3000) to our system's host port (8080, as specified) so that we can pull up the project with localhost. You can view the project at http://localhost:8080/ to verify that it is working correctly.
+5. In a separate terminal tab, run `docker stop <name>` to stop the container. Afterwards, remove the container with `docker stop <name>`. Use `docker container ls` to ensure that the container has now been removed. 
+6. [insert step detailing how to add server]
+7. Reconfigure your local `docker-machine` CLI to utilize point at the Digital Ocean Docker machine using `eval $(docker-machine env <machine_name>)`.
+8. Run `docker run --name <name> -p 80:3000 -d <image_name>`. This will start a Docker container on the Digital Ocean machine that will run the specified image. At this point, the project should be up and running publicly. 
 
 
