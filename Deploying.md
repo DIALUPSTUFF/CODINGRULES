@@ -36,7 +36,7 @@ Our Digital Ocean server can be thought of as a separate computer. Similar our o
 8. If all seems good, updates to the site should now be officially deployed.
 
 
-### Docker Deployment Process (Experimental)
+### Docker + Digial Ocean Machine Management Process (Experimental)
 Our production site is hosted on Digital Ocean, and can be reach at http://dialupstuff.com/.
 
 **Steps**:
@@ -46,8 +46,11 @@ Our production site is hosted on Digital Ocean, and can be reach at http://dialu
 3. `cd` into the root directory of your project and run `docker build -t <image_name> .` to create an [image](https://docs.docker.com/engine/getstarted/step_two/) of the project on your system. Check that the image was successfully by running `docker images`.
 4. Do a test run of the image using `docker run --name <name> -p 8080:3000 -d <image_name>`. This starts a Docker container that is running the image of the project we just created. Since this container is actually a virtual machine, we need to forward the exposed container port (3000) to our system's host port (8080, as specified) so that we can pull up the project with localhost. You can view the project at http://localhost:8080/ to verify that it is working correctly.
 5. In a separate terminal tab, run `docker stop <name>` to stop the container. Afterwards, remove the container with `docker stop <name>`. Use `docker container ls` to ensure that the container has now been removed. 
-6. [insert step detailing how to add server]
-7. Reconfigure your local `docker-machine` CLI to utilize point at the Digital Ocean Docker machine using `eval $(docker-machine env <machine_name>)`.
-8. Run `docker run --name <name> -p 80:3000 -d <image_name>`. This will start a Docker container on the Digital Ocean machine that will run the specified image. At this point, the project should be up and running publicly. 
+6. [insert step detailing how to add machine keys]
+7. Setup an Automated Build project on [DockerHub](https://hub.docker.com). Link this to your GitHub account, and configure the `prod` branch to build with Docker tag `latest` in Build Settings. Save changes and trigger a build to test. 
+8. Once the build is complete, reconfigure your local `docker-machine` CLI to utilize point at the Digital Ocean Docker machine using `eval $(docker-machine env <machine_name>)`.
+9. Pull the image produced by the Automated Build on Docker Hub onto the Digital Ocean Docker Machine using `docker pull <docker_repo_name>`.
+10. Run `docker run --name <name> -p 80:3000 -d <image_name>`. This will start a Docker container on the Digital Ocean machine that will run the specified image. At this point, the project should be up and running publicly. 
+
 
 
