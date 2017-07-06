@@ -4,7 +4,7 @@
 Our staging site is hosted on Heroku, and can be reach at https://dialupstuff.herokuapp.com/.
 
 **Preparation**:
-If you haven't already, download [Heroku's CLI](https://devcenter.heroku.com/articles/heroku-command-line). Afterwards, run 'heroku login', and enter in the login info. 
+If you haven't already, download [Heroku's CLI](https://devcenter.heroku.com/articles/heroku-command-line). Afterwards, run 'heroku login', and enter in the login info.
 
 **How It Works**:
 Our Heroku server can be treated like a remote repository. Similar to Github, we can `git push` code to the Heroku server. Any time we push to our Heroku server, it will essentially wipe all the code it previously stored, store the new code that was pushed, run `npm install`, and then use the command listed in our Procfile to start the project's server.
@@ -22,35 +22,33 @@ Our Heroku server can be treated like a remote repository. Similar to Github, we
 Our production site is hosted on Digital Ocean, and can be reach at http://dialupstuff.com/.
 
 **How It Works**:
-Our Digital Ocean server can be thought of as a separate computer. Similar our own dev environments, we can `git pull` code from our remote repository on Github and start it. We simply need to pull the code onto the Digital Ocean server, download depencies and start the Node server code. We use [Forever](https://github.com/foreverjs/forever) to keep the Node server for this project running...well...forever.
+Any time someone pushes to the `prod` branch, our Docker images [repository on Docker Hub](https://hub.docker.com/r/bomanimc/dialupsite-docker/) builds a new that matches the code that has just been pushed. On our Digital Ocean server, a service called [Watchtower](https://github.com/v2tec/watchtower) pulls down the latest image on the repository every 5 minutes, and compares it to the image that is currently being run on the server. If it's different, it gracefully shutdowns the container running the old image, and starts a new one using the new image. configured using `docker-machine`, and runs a Docker container for our project. In short, pushes to the `prod` branch result in live changes to the website in about 5 minutes.
 
 **Steps**:
 
-1. Login to the Digital Ocean account and copy the IP address of the droplet.
-2. Open a terminal window, and SSH into the droplet using `ssh root@<ipaddress>.
-3. Once you're in, use `cd /opt/DialUpSite`. 
-4. Switch to the prod branch with `git checkout prod`, and pull new changes with `git pull`. 
-5. Run `npm install` to download any missing dependencies.
-6. Run `forever restart server.js` to start the node server for this project. You may need to change the Express server to use port 80 if the code doesn't pick up on the correct port using the environment variable. We will looking into correcting this.
-7. Ensure that the server is running by checking `forever list` and open Forever logs with `forever logs server.js` to check output.
-8. If all seems good, updates to the site should now be officially deployed.
+1. Merge code from `stg` (or another branch) to `prod`.
 
 
-### Docker + Digial Ocean Machine Management Process (Experimental)
-Our production site is hosted on Digital Ocean, and can be reach at http://dialupstuff.com/.
+### Docker + Digital Ocean Machine Management Process (Experimental)
+For those curious about how to configure this Docker + Digital Ocean setup.
 
 **Steps**:
 
 1. Download the [Docker Toolbox](https://www.docker.com/products/docker-toolbox), and verify that it's successfully installed [using this guide](https://docs.docker. com/engine/getstarted/step_one/). Once the toolbox has started, ensure you've open the Docker application (Docker daemon) that should now be present on your computer.
-2. Run `eval "$(docker-machine env default)"` to configure your local CLI to utilize `docker-machine` commands. More details on why this is necessary can be found [here](http://stackoverflow.com/questions/40038572/eval-docker-machine-env-default). 
+2. Run `eval "$(docker-machine env default)"` to configure your local CLI to utilize `docker-machine` commands. More details on why this is necessary can be found [here](http://stackoverflow.com/questions/40038572/eval-docker-machine-env-default).
 3. `cd` into the root directory of your project and run `docker build -t <image_name> .` to create an [image](https://docs.docker.com/engine/getstarted/step_two/) of the project on your system. Check that the image was successfully by running `docker images`.
 4. Do a test run of the image using `docker run --name <name> -p 8080:3000 -d <image_name>`. This starts a Docker container that is running the image of the project we just created. Since this container is actually a virtual machine, we need to forward the exposed container port (3000) to our system's host port (8080, as specified) so that we can pull up the project with localhost. You can view the project at http://localhost:8080/ to verify that it is working correctly.
-5. In a separate terminal tab, run `docker stop <name>` to stop the container. Afterwards, remove the container with `docker stop <name>`. Use `docker container ls` to ensure that the container has now been removed. 
-6. [insert step detailing how to add machine keys]
-7. Setup an Automated Build project on [DockerHub](https://hub.docker.com). Link this to your GitHub account, and configure the `prod` branch to build with Docker tag `latest` in Build Settings. Save changes and trigger a build to test. 
-8. Once the build is complete, reconfigure your local `docker-machine` CLI to utilize point at the Digital Ocean Docker machine using `eval $(docker-machine env <machine_name>)`.
-9. Pull the image produced by the Automated Build on Docker Hub onto the Digital Ocean Docker Machine using `docker pull <docker_repo_name>`.
-10. Run `docker run --name <name> -p 80:3000 -d <image_name>`. This will start a Docker container on the Digital Ocean machine that will run the specified image. At this point, the project should be up and running publicly. 
-
-
-
+5. In a separate terminal tab, run `docker stop <name>` to stop the container. Afterwards, remove the container with `docker rm <name>`. Use `docker ps -a` to ensure that the container has now been removed.
+6. Setup an Automated Build project on [DockerHub](https://hub.docker.com). Link this to your GitHub account, and configure the `prod` branch to build with Docker tag `latest` in Build Settings. Save changes and trigger a build to test.
+7. Once the build is complete, reconfigure your local `docker-machine` CLI to utilize point at the Digital Ocean Docker machine using `eval $(docker-machine env <machine_name>)`.
+8. Pull the image produced by the Automated Build on Docker Hub onto the Digital Ocean Docker Machine using `docker pull <docker_repo_name>`.
+9. Run `docker run --name <name> -p 80:3000 -d <image_name>`. This will start a Docker container on the Digital Ocean machine that will run the specified image. At this point, the project should be up and running publicly. Check the public URL (the server's IP address or the domain name) to verify.
+10. Next, install [Watchtower](https://github.com/v2tec/watchtower) by running `docker pull v2tec/watchtower`.
+11. Start Watchtower with...
+```
+docker run -d \
+  --name watchtower \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  v2tec/watchtower --cleanup
+```
+12. That's it. This will automatically check for new versions of images that are being used in active containers running on the server. The `--cleanup` flag tells Watchtower to remove old versions of the image when it sees a new one.
