@@ -26,7 +26,7 @@ Any time someone pushes to the `prod` branch, our Docker images [repository on D
 
 **Steps**:
 
-1. Merge code from `stg` (or another branch) to `prod`.
+1. Merge code from `staging` (or another branch) to `prod`.
 
 
 ### Docker + Digital Ocean Machine Management Process (Experimental)
